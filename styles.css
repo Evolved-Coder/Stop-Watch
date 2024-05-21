@@ -1,0 +1,17 @@
+#gameBoard{
+    border: 2px solid;
+}
+#scoreText{
+    font-family: cursive;
+    font-size: 35px;
+    color: blue;
+}
+#gameContainer{
+    text-align: center;
+}
+#resetBtn{
+    font-size: 20px;
+    border: 2px solid;
+    border-radius: 5px;
+    cursor: pointer;
+}
