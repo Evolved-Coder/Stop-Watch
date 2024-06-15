@@ -1,90 +1,61 @@
-const gameBoard = document.getElementById(gameBoard);
-const ctx = gameBoard.getContext("2d");
-const scoreText = document.getElementById("scoreText");
+let timerDisplay = document.getElementById("timerDisplay");
+const startBtn = document.getElementById("startBtn");
+const pauseBtn = document.getElementById("pauseBtn");
 const resetBtn = document.getElementById("resetBtn");
-const gameWidth = gameBoard.width;
-const gameHeight = gameBoard.height;
-const boardBackgroundColor = "white";
-const foodColor = "red";
-const snakeColor = "lightgreen";
-const  snakeBorder = "black";
-const unitSize = 25;
 
-let running = false;
-let foodX;
-let foodY;
-let xVelocity = unitSize;
-let yVelocity = 0;
-let score = 0
-let snake = [
-    {x: unitSize * 4, y: 0},
-    {x: unitSize * 3, y: 0},
-    {x: unitSize * 2, y: 0},
-    {x: unitSize, y: 0},
-    {x: 0, y:0}
-];
-
-window.addEventListener("keydown", changeDirection);
-resetBtn.addEventListener("click", resetGame);
-
-    drawFood();
-    createFood();
-    initialiseGame()
+let startTime = 0;
+let elapsedTime = 0;
+let paused = true;
+let intervalId;
+let hrs = 0;
+let mins = 0;
+let secs = 0;
 
 
-function initialiseGame(){
-    running = true;
-    scoreText.textContent = score;
-    drawFood();
-    createFood();
-    nextTick();
-};
-function nextTick(){
-    if(running){
-        setTimeout(() => {
-            clearBoard()
-            drawFood();
-            createFood()
-            drawSnake();
-            moveSnake();
-            checkGameOver()
-            nextTick();
-        }, 75);
+startBtn.addEventListener("click", () => {
+    if(paused){
+        paused = false;
+        startTime = Date.now() - elapsedTime;
+        intervalId = setInterval(update, 1000)
     }
-    else{
-        displayGameOver();
+})
+pauseBtn.addEventListener("click", () => {
+    if(!paused){
+        paused = true;
+        elapsedTime = Date.now() - startTime
+        clearInterval(intervalId);
     }
-};
-function clearBoard(){
-    ctx.fillStyle = boardBackgroundColor;
-    ctx.fillRect(0, 0, gameWidth, gameHeight);
-};
-function drawFood(){
+})
+resetBtn.addEventListener("click", () => {
+    clearInterval(intervalId);
+    startTime = 0;
+    elapsedTime = 0;
+    paused = true;
+    intervalId;
+    hrs = 0;
+    mins = 0;
+    secs = 0;
+    timerDisplay.textContent = "00:00:00"
+})
 
-};
-function createFood(){
-    function randomFood(min, max){
-        const randFood = Math.round((Math.random() * (max - min) + min / unitSize)) * unitSize
-        return randFood
+
+
+function update(){
+    elapsedTime = Date.now() - startTime;
+
+    secs = Math.floor((elapsedTime / 1000) % 60);
+    mins = Math.floor(elapsedTime / (1000 * 60) % 60);
+    hrs = Math.floor(elapsedTime / (1000 * 60 * 60) % 60);
+
+    secs = addZeroes(secs);
+    mins = addZeroes(mins);
+    hrs = addZeroes(hrs);
+
+
+    return timerDisplay.textContent = `${hrs}:${mins}:${secs}`;
+
+    function addZeroes(time){
+        time = time.toString();
+        return time.length < 2 ? "0" + time : time;
     }
-    foodX = randomFood(0, gameWidth - unitSize);
-    foodY = randomFood(0, gameHeight - unitSize);
-}
-function drawSnake(){
-
-};
-function moveSnake(){
-
-};
-function changeDirection(){
-
-};
-function checkGameOver(){
-
-}
-function displayGameOver(){
-
-};
-function resetGame(){
-
 }
